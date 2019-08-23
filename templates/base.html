@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>欢迎来到Flask例子程序</title>
+    {% endif %}
+    <link rel="stylesheet" href="../static/head.css">
+    {% block head %}
+        {#头部内容#}
+    {% endblock %}
+</head>
+<body>
+<div class="head">
+    博客：<a href="{{ url_for('index') }}">首页</a>
+    {% if current_user.is_anonymous %}
+        <a href="{{ url_for('login_opt.login') }}">登录</a>
+    {% else %}
+        <a href="{{ url_for('about_opt.user', username=current_user.username) }}">用户中心</a>
+        <a href="{{ url_for('login_opt.logout') }}">退出</a>
+    {% endif %}
+</div>
+<hr>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ur>
+            {% for mesage in messages %}
+                <li>{{ mesage }}</li>
+            {% endfor %}
+        </ur>
+    {% endif %}
+{% endwith %}
+{% block content %}
+    {#页面内容#}
+{% endblock %}
+{% block foot %}
+    {#页尾内容#}
+{% endblock %}
+</body>
+</html>
