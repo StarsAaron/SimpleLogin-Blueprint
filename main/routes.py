@@ -1,4 +1,5 @@
-from flask import render_template
+from flask import render_template, g
+from flask_login import login_required
 
 from main import app
 
@@ -7,7 +8,7 @@ from main import app
 @app.route('/index')
 # @login_required
 def index():
-    user = {'username': 'kevin'}
+    user = g.user
     posts = [
         {
             'author': {'username': '刘'},

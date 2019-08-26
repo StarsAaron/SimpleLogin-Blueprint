@@ -15,4 +15,4 @@ url_for(‘.index’)
 '''
 about_opt = Blueprint('about_opt', __name__, static_folder="../static",
                       template_folder="../templates")
-import about.routes,about.errors
+from about import routes, forms, errors

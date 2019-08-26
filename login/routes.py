@@ -15,6 +15,12 @@ def login():
         return redirect(url_for('index'))
 
     form = LoginForm()
+    '''
+    validate_on_submit
+    方法做了所有表单处理工作。当表单正在展示给用户的时候调用它，它会返回False.
+    如果validate_on_submit在表单提交请求中被调用，它将会收集所有的数据，对字段
+    进行验证，如果所有的事情都通过的话，它将会返回True，表示数据都是合法的。
+    '''
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):

@@ -4,7 +4,8 @@ from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
 
 from login.models import User
 
-
+# 表单中实际的字段也将会被表单对象渲染，你只必须在字段应该被插入的地方
+# 指明一个 {{form.field_name}} 模板参数
 class LoginForm(FlaskForm):
     # DataRequired，当你在当前表格没有输入而直接到下一个表格时会提示你输入
     username = StringField('用户名', validators=[DataRequired(message='请输入名户名')])

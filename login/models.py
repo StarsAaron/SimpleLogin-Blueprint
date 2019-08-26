@@ -3,10 +3,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from hashlib import md5
 
-from main import db
+from main import db, login_manager
 
 """
 用户表相关model
+
+登录验证需要实现验证接口
+提供了一个默认实现UserMixin ：
+is_authenticated 方法有一个具有迷惑性的名称。一般而言，这个方法应该只返回 True，除非表示用户的对象因为某些原因不允许被认证。
+is_active 方法应该返回 True，除非是用户是无效的，比如因为他们的账号是被禁止。
+is_anonymous 方法应该返回 True，如果是匿名的用户不允许登录系统。
 """
 
 
@@ -42,6 +48,45 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<用户名:{}>'.format(self.username)
+
+
+# 不使用默认实现UserMixin，需要实现所有方法
+# class User(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     nickname = db.Column(db.String(64), index=True, unique=True)
+#     email = db.Column(db.String(120), index=True, unique=True)
+#     posts = db.relationship('Post', backref='author', lazy='dynamic')
+#
+#     @property
+#     def is_authenticated(self):
+#         return True
+#
+#     @property
+#     def is_active(self):
+#         return True
+#
+#     @property
+#     def is_anonymous(self):
+#         return False
+#
+#     # get_id 方法应该返回一个用户唯一的标识符，以 unicode 格式。我们使用
+#     # 数据库生成的唯一的 id。需要注意地是在 Python 2 和 3 之间由于 unicode
+#     # 处理的方式的不同我们提供了相应的方式。
+#     def get_id(self):
+#         try:
+#             return unicode(self.id)  # python 2
+#         except NameError:
+#             return str(self.id)  # python 3
+#
+#     def __repr__(self):
+#         return '<User %r>' % (self.nickname)
+
+# 用于从数据库加载用户。这个函数将会被 Flask-Login 使用
+@login_manager.user_loader
+def load_user(id):
+    # 在 Flask-Login 中的用户 id 永远是 unicode 字符串，因此在我们
+    # 把 id 发送给 Flask-SQLAlchemy 之前，把 id 转成整型是必须的，否则会报错！
+    return User.query.get(int(id))
 
 
 class Post(db.Model):

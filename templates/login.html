@@ -4,10 +4,13 @@
     <h1>登 录</h1>
     <p>还没注册? <a href="{{ url_for('login_opt.register') }}">点击一下就可以注册哦!</a></p>
     <form action="" method="post">
+        {# form.hidden_tag() 模板参数将被替换为一个隐藏字段，用来是实现在配置中
+        激活的 CSRF 保护。如果你已经激活了 CSRF，这个字段需要出现在你所有的表单中。#}
         {{ form.hidden_tag() }}
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
+            {# 任何需要验证的字段都会把错误信息放入 form.field_name.errors 下#}
             {% for error in form.username.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
